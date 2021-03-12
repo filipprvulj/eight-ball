@@ -5,7 +5,7 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <Folder Include="Services\" />
+    <ProjectReference Include="..\EightBall.Shared\EightBall.Shared.csproj" />
   </ItemGroup>
 
 </Project>
