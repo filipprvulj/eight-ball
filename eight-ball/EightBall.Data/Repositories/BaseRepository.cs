@@ -15,36 +15,52 @@ namespace EightBall.Data.Repositories
         where TEntity : BaseEntity
         where TDto : BaseDto
     {
+        protected readonly EightBallDbContext _context;
         protected readonly IMapper _mapper;
+        protected DbSet<TEntity> Entities { get; set; }
 
-        public BaseRepository(IMapper mapper)
+        public BaseRepository(EightBallDbContext context, IMapper mapper)
         {
+            _context = context;
             _mapper = mapper;
+            Entities = _context.Set<TEntity>();
         }
 
-        public Task<Guid> AddEntityAsync(TDto dto)
+        public async Task<Guid> AddEntityAsync(TDto dto)
         {
-            throw new NotImplementedException();
+            TEntity entity = _mapper.Map<TEntity>(dto);
+            Entities.Add(entity);
+            await _context.SaveChangesAsync();
+
+            return entity.Id;
         }
 
         public Task<List<TDto>> GetEntitiesAsync()
         {
-            throw new NotImplementedException();
+            return _mapper.ProjectTo<TDto>(Entities).ToListAsync();
         }
 
-        public Task<TDto> GetByIdAsync(Guid id)
+        public async Task<TDto> GetByIdAsync(Guid id)
         {
-            throw new NotImplementedException();
+            Task<TEntity> entity = Entities.FirstOrDefaultAsync(e => e.Id == id);
+
+            return _mapper.Map<TDto>(await entity);
         }
 
-        public Task<int> RemoveEntityAsync(Guid id)
+        public async Task<int> RemoveEntityAsync(Guid id)
         {
-            throw new NotImplementedException();
+            TEntity entity = await Entities.FindAsync(id);
+            Entities.Remove(entity);
+
+            return await _context.SaveChangesAsync();
         }
 
         public Task<int> UpdateEntityAsync(TDto dto)
         {
-            throw new NotImplementedException();
+            TEntity entity = _mapper.Map<TEntity>(dto);
+            Entities.Update(entity);
+
+            return _context.SaveChangesAsync();
         }
     }
 }

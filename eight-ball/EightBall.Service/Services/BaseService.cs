@@ -1,4 +1,5 @@
 ﻿using EightBall.Shared.Dtos;
+using EightBall.Shared.RepositoryInterfaces;
 using EightBall.Shared.ServiceInterfaces;
 using System;
 using System.Collections.Generic;
@@ -8,32 +9,40 @@ using System.Threading.Tasks;
 
 namespace EightBall.Service.Services
 {
-    public class BaseService<TDto> : IBaseService<TDto>
+    public class BaseService<TDto, TRepository> : IBaseService<TDto>
         where TDto : BaseDto
+        where TRepository : IBaseRepository<TDto>
     {
+        private readonly IBaseRepository<TDto> _repository;
+
+        public BaseService(TRepository repository)
+        {
+            _repository = repository;
+        }
+
         public Task<TDto> GetByIdAsync(Guid id)
         {
-            throw new NotImplementedException();
+            return _repository.GetByIdAsync(id);
         }
 
         public Task<List<TDto>> GetEntitiesAsync()
         {
-            throw new NotImplementedException();
+            return _repository.GetEntitiesAsync();
         }
 
         public Task<Guid> InsertAsync(TDto dto)
         {
-            throw new NotImplementedException();
+            return _repository.AddEntityAsync(dto);
         }
 
         public Task<int> RemoveAsync(Guid id)
         {
-            throw new NotImplementedException();
+            return _repository.RemoveEntityAsync(id);
         }
 
         public Task<int> UpdateAsync(TDto dto)
         {
-            throw new NotImplementedException();
+            return _repository.UpdateEntityAsync(dto);
         }
     }
 }
