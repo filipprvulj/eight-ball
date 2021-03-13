@@ -5,6 +5,7 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <ProjectReference Include="..\EightBall.Data\EightBall.Data.csproj" />
     <ProjectReference Include="..\EightBall.Shared\EightBall.Shared.csproj" />
   </ItemGroup>
 
