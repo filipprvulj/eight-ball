@@ -1,6 +1,8 @@
-﻿using EightBall.Data.Entities;
+﻿using AutoMapper;
+using EightBall.Data.Entities;
 using EightBall.Shared.Dtos;
 using EightBall.Shared.RepositoryInterfaces;
+using Microsoft.EntityFrameworkCore;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -13,6 +15,13 @@ namespace EightBall.Data.Repositories
         where TEntity : BaseEntity
         where TDto : BaseDto
     {
+        protected readonly IMapper _mapper;
+
+        public BaseRepository(IMapper mapper)
+        {
+            _mapper = mapper;
+        }
+
         public Task<Guid> AddEntityAsync(TDto dto)
         {
             throw new NotImplementedException();
