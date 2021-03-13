@@ -18,5 +18,7 @@ namespace EightBall.Shared.ServiceInterfaces
         public Task<int> RemoveAsync(Guid id);
 
         public Task<int> UpdateAsync(TDto dto);
+
+        public Task<bool> EntityExists(Guid id);
     }
 }

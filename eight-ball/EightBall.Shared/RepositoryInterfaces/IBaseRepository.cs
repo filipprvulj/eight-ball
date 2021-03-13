@@ -18,5 +18,7 @@ namespace EightBall.Shared.RepositoryInterfaces
         public Task<Guid> AddEntityAsync(TDto dto);
 
         public Task<int> UpdateEntityAsync(TDto dto);
+
+        public Task<bool> EntityExists(Guid id);
     }
 }

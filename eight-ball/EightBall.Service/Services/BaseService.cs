@@ -13,11 +13,16 @@ namespace EightBall.Service.Services
         where TDto : BaseDto
         where TRepository : IBaseRepository<TDto>
     {
-        private readonly IBaseRepository<TDto> _repository;
+        protected readonly TRepository _repository;
 
         public BaseService(TRepository repository)
         {
             _repository = repository;
+        }
+
+        public Task<bool> EntityExists(Guid id)
+        {
+            return _repository.EntityExists(id);
         }
 
         public Task<TDto> GetByIdAsync(Guid id)
