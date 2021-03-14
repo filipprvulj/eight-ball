@@ -9,5 +9,8 @@ namespace EightBall.Shared.RepositoryInterfaces
 {
     public interface ITableRepository : IBaseRepository<TableDto>
     {
+        public Task<bool> IsTableUniqueAsync(string name);
+
+        public Task<bool> IsTableUniqueAsync(string name, Guid id);
     }
 }

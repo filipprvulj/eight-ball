@@ -1,4 +1,5 @@
 ﻿using AutoMapper;
+using EightBall.MVC.Extensions;
 using EightBall.MVC.Models;
 using EightBall.Shared.Dtos;
 using EightBall.Shared.ServiceInterfaces;
@@ -28,8 +29,8 @@ namespace EightBall.MVC.Controllers
         // GET: TablesController
         public async Task<IActionResult> Index()
         {
-            var tables = await _tableService.GetEntitiesAsync();
-            var model = _mapper.Map<List<TableModel>>(tables);
+            var result = await _tableService.GetEntitiesAsync();
+            var model = _mapper.Map<List<TableModel>>(result.Value);
 
             return View(model);
         }
@@ -37,17 +38,14 @@ namespace EightBall.MVC.Controllers
         // GET: TablesController/Details/5
         public async Task<IActionResult> Details(Guid id)
         {
-            if (id == Guid.Empty)
+            var result = await _tableService.GetByIdAsync(id);
+
+            if (result.Errors.ContainsKey(Errors.NotFound))
             {
                 return NotFound();
             }
 
-            var table = await _tableService.GetByIdAsync(id);
-            if (table == null)
-            {
-                return NotFound();
-            }
-
+            var table = result.Value;
             return View(table);
         }
 
@@ -64,34 +62,30 @@ namespace EightBall.MVC.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Create([Bind("Name,Id")] TableModel tableModel)
         {
-            if (ModelState.IsValid)
-            {
-                var table = _mapper.Map<TableDto>(tableModel);
-                await _tableService.InsertAsync(table);
+            var table = _mapper.Map<TableDto>(tableModel);
+            var result = await _tableService.InsertAsync(table);
 
-                return RedirectToAction(nameof(Index));
-            }
-            else
+            if (!result.Succeeded)
             {
+                ModelState.AddModelStateErrors(result.Errors);
+
                 return View();
             }
+            return RedirectToAction(nameof(Index));
         }
 
         // GET: TablesController/Edit/5
         [Authorize(Roles = RoleNames.Employee)]
         public async Task<IActionResult> Edit(Guid id)
         {
-            if (id == Guid.Empty)
+            var result = await _tableService.GetByIdAsync(id);
+
+            if (result.Errors.ContainsKey(Errors.NotFound))
             {
                 return NotFound();
             }
 
-            var table = await _tableService.GetByIdAsync(id);
-            if (table == null)
-            {
-                return NotFound();
-            }
-
+            var table = result.Value;
             TableModel model = _mapper.Map<TableModel>(table);
             return View(model);
         }
@@ -102,39 +96,35 @@ namespace EightBall.MVC.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Edit(Guid id, [Bind("Name,Id")] TableModel model)
         {
-            if (ModelState.IsValid)
+            TableDto table = _mapper.Map<TableDto>(model);
+            var result = await _tableService.UpdateAsync(table);
+            if (result.Errors.ContainsKey(Errors.NotFound))
             {
-                bool entityExists = await _tableService.EntityExists(model.Id);
-                if (!entityExists)
-                {
-                    return NotFound();
-                }
-
-                TableDto table = _mapper.Map<TableDto>(model);
-                await _tableService.UpdateAsync(table);
-
-                return RedirectToAction(nameof(Index));
+                return NotFound();
             }
 
-            return View(model);
+            if (result.Succeeded)
+            {
+                return RedirectToAction(nameof(Index));
+            }
+            else
+            {
+                ModelState.AddModelStateErrors(result.Errors);
+                return View(model);
+            }
         }
 
         // GET: TablesController/Delete/5
         [Authorize(Roles = RoleNames.Employee)]
         public async Task<IActionResult> Delete(Guid id)
         {
-            if (id == Guid.Empty)
+            var result = await _tableService.GetByIdAsync(id);
+            if (result.Errors.ContainsKey(Errors.NotFound))
             {
                 return NotFound();
             }
 
-            bool entityExists = await _tableService.EntityExists(id);
-            if (!entityExists)
-            {
-                return NotFound();
-            }
-
-            var table = await _tableService.GetByIdAsync(id);
+            var table = result.Value;
             return View(table);
         }
 
@@ -144,7 +134,12 @@ namespace EightBall.MVC.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> DeleteConfirmed(Guid id)
         {
-            await _tableService.RemoveAsync(id);
+            var result = await _tableService.RemoveAsync(id);
+            if (result.Errors.ContainsKey(Errors.NotFound))
+            {
+                return NotFound();
+            }
+
             return RedirectToAction(nameof(Index));
         }
     }

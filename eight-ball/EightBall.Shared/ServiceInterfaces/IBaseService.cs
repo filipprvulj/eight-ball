@@ -9,15 +9,15 @@ namespace EightBall.Shared.ServiceInterfaces
 {
     public interface IBaseService<TDto> where TDto : BaseDto
     {
-        public Task<TDto> GetByIdAsync(Guid id);
+        public Task<Result<TDto>> GetByIdAsync(Guid id);
 
-        public Task<List<TDto>> GetEntitiesAsync();
+        public Task<Result<List<TDto>>> GetEntitiesAsync();
 
-        public Task<Guid> InsertAsync(TDto dto);
+        public Task<Result<Guid>> InsertAsync(TDto dto);
 
-        public Task<int> RemoveAsync(Guid id);
+        public Task<Result> RemoveAsync(Guid id);
 
-        public Task<int> UpdateAsync(TDto dto);
+        public Task<Result> UpdateAsync(TDto dto);
 
         public Task<bool> EntityExists(Guid id);
     }
