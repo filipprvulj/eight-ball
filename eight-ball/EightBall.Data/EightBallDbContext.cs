@@ -17,5 +17,7 @@ namespace EightBall.Data
         }
 
         public DbSet<Table> Tables { get; set; }
+
+        public DbSet<Appointment> Appointments { get; set; }
     }
 }

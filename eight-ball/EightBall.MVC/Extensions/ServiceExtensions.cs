@@ -13,6 +13,7 @@ namespace EightBall.MVC.Extensions
         public static IServiceCollection AddServices(this IServiceCollection services)
         {
             services.AddScoped<ITableService, TableService>();
+            services.AddScoped<IAppointmentService, AppointmentService>();
 
             return services;
         }
