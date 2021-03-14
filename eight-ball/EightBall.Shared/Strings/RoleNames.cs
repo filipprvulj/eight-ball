@@ -10,5 +10,6 @@ namespace EightBall.Shared.Strings
     {
         public const string Employee = "Zaposleni";
         public const string Visitor = "Posetilac";
+        public const string EmployeeOrVisitor = "Zaposleni,Posetilac";
     }
 }

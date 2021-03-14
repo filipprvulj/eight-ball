@@ -1,4 +1,7 @@
 ﻿using AutoMapper;
+using EightBall.Data.Entities;
+using EightBall.MVC.Models;
+using EightBall.Shared.Dtos;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -10,6 +13,12 @@ namespace EightBall.MVC.Mapper
     {
         public AutoMapperProfile()
         {
+            #region Table Maps
+
+            CreateMap<Table, TableDto>().ReverseMap();
+            CreateMap<TableDto, TableModel>().ReverseMap();
+
+            #endregion Table Maps
         }
     }
 }

@@ -34,6 +34,10 @@ namespace EightBall.MVC
                 .AddDefaultTokenProviders()
                 .AddDefaultUI();
 
+            services.AddAutoMapper(AppDomain.CurrentDomain.GetAssemblies());
+            services.AddRepositories();
+            services.AddServices();
+
             services.AddRazorPages();
             services.AddControllersWithViews();
         }

@@ -62,5 +62,10 @@ namespace EightBall.Data.Repositories
 
             return _context.SaveChangesAsync();
         }
+
+        public Task<bool> EntityExists(Guid id)
+        {
+            return Entities.AnyAsync(e => e.Id == id);
+        }
     }
 }

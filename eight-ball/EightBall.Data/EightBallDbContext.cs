@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Identity;
+﻿using EightBall.Data.Entities;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
 using System;
@@ -14,5 +15,7 @@ namespace EightBall.Data
         public EightBallDbContext(DbContextOptions<EightBallDbContext> options) : base(options)
         {
         }
+
+        public DbSet<Table> Tables { get; set; }
     }
 }
