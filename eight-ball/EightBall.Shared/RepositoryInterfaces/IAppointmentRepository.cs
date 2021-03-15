@@ -9,5 +9,6 @@ namespace EightBall.Shared.RepositoryInterfaces
 {
     public interface IAppointmentRepository : IBaseRepository<AppointmentDto>
     {
+        public Task<bool> IsAppointmentUnique(AppointmentDto appointmentDto);
     }
 }

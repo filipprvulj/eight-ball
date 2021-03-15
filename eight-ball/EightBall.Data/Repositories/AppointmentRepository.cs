@@ -2,6 +2,7 @@
 using EightBall.Data.Entities;
 using EightBall.Shared.Dtos;
 using EightBall.Shared.RepositoryInterfaces;
+using Microsoft.EntityFrameworkCore;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -14,6 +15,12 @@ namespace EightBall.Data.Repositories
     {
         public AppointmentRepository(EightBallDbContext context, IMapper mapper) : base(context, mapper)
         {
+        }
+
+        public async Task<bool> IsAppointmentUnique(AppointmentDto appointmentDto)
+        {
+            bool entityExists = await Entities.AnyAsync(a => a.Start == appointmentDto.Start && a.End == appointmentDto.End && a.Id != appointmentDto.Id);
+            return !entityExists;
         }
     }
 }
