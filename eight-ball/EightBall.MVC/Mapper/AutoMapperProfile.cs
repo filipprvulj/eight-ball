@@ -19,6 +19,13 @@ namespace EightBall.MVC.Mapper
             CreateMap<TableDto, TableModel>().ReverseMap();
 
             #endregion Table Maps
+
+            #region Appointment maps
+
+            CreateMap<Appointment, AppointmentDto>().ReverseMap();
+            CreateMap<AppointmentDto, AppointmentModel>().ReverseMap();
+
+            #endregion Appointment maps
         }
     }
 }
