@@ -10,5 +10,6 @@ namespace EightBall.Data.Entities
     {
         public DateTime Start { get; set; }
         public DateTime End { get; set; }
+        public ICollection<Table> Tables { get; set; } = new List<Table>();
     }
 }

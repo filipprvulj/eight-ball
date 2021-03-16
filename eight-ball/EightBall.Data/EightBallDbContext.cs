@@ -19,5 +19,15 @@ namespace EightBall.Data
         public DbSet<Table> Tables { get; set; }
 
         public DbSet<Appointment> Appointments { get; set; }
+
+        protected override void OnModelCreating(ModelBuilder builder)
+        {
+            base.OnModelCreating(builder);
+
+            builder.Entity<Table>()
+                .HasMany(l => l.Appointments)
+                .WithMany(r => r.Tables)
+                .UsingEntity(join => join.ToTable("TableAppointments"));
+        }
     }
 }

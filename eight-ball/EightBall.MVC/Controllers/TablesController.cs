@@ -7,6 +7,7 @@ using EightBall.Shared.Strings;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Mvc.Rendering;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -19,10 +20,12 @@ namespace EightBall.MVC.Controllers
     {
         private readonly ITableService _tableService;
         private readonly IMapper _mapper;
+        private readonly IAppointmentService _appointmentService;
 
-        public TablesController(ITableService tableService, IMapper mapper)
+        public TablesController(ITableService tableService, IMapper mapper, IAppointmentService appointmentService)
         {
             _tableService = tableService;
+            _appointmentService = appointmentService;
             _mapper = mapper;
         }
 
@@ -141,6 +144,48 @@ namespace EightBall.MVC.Controllers
             }
 
             return RedirectToAction(nameof(Index));
+        }
+
+        [Authorize(Roles = RoleNames.Employee)]
+        public async Task<IActionResult> AddTableAppointment(Guid id)
+        {
+            bool tableExists = await _tableService.EntityExists(id);
+            if (!tableExists)
+            {
+                return NotFound();
+            }
+            else
+            {
+                var appointmentResult = await _appointmentService.GetEntitiesAsync();
+                if (appointmentResult.Succeeded)
+                {
+                    List<SelectListItem> selectList = appointmentResult.Value.Select(a => new SelectListItem
+                    {
+                        Value = a.Id.ToString(),
+                        Text = string.Join(" - ", a.Start, a.End)
+                    }).ToList();
+                    TableAppointmentViewModel viewModel = new TableAppointmentViewModel();
+                    viewModel.TableId = id;
+                    viewModel.Appointments.AddRange(selectList);
+
+                    return View(viewModel);
+                }
+            }
+
+            return BadRequest();
+        }
+
+        [HttpPost]
+        [Authorize(Roles = RoleNames.Employee)]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> AddTableAppointment([Bind("TableId, AppointmentId")] TableAppointmentViewModel viewModel)
+        {
+            var tableAppointmentResult = await _tableService.AddTableAppointmentAsync(viewModel.TableId, viewModel.AppointmentId);
+            if (tableAppointmentResult.Succeeded)
+            {
+                return RedirectToAction(nameof(Details), new { id = viewModel.TableId });
+            }
+            return BadRequest();
         }
     }
 }

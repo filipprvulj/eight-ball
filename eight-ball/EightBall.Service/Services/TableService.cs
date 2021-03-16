@@ -13,15 +13,44 @@ namespace EightBall.Service.Services
 {
     public class TableService : BaseService<TableDto, ITableRepository>, ITableService
     {
-        public TableService(ITableRepository repository) : base(repository)
+        private readonly IAppointmentService _appointmentService;
+
+        public TableService(ITableRepository repository, IAppointmentService appointmentService) : base(repository)
         {
+            _appointmentService = appointmentService;
+        }
+
+        public async Task<Result> AddTableAppointmentAsync(Guid id, Guid appointmentId)
+        {
+            Result result = new Result();
+            bool entityExists = await EntityExists(id);
+            if (!entityExists)
+            {
+                result.Errors.Add(Errors.NotFound, "Table not found");
+                return result;
+            }
+
+            var appointmentResult = await _appointmentService.GetByIdAsync(appointmentId);
+            if (!appointmentResult.Succeeded)
+            {
+                result.Errors = appointmentResult.Errors;
+                return result;
+            }
+
+            var appointmentsAdded = await _repository.AddTableAppointmentAsync(id, appointmentResult.Value);
+            if (appointmentsAdded != default)
+            {
+                result.Succeeded = true;
+            }
+
+            return result;
         }
 
         public override async Task<Result<Guid>> InsertAsync(TableDto dto)
         {
             Result<Guid> result = new Result<Guid>();
             bool isTableUnique = await _repository.IsTableUniqueAsync(dto.Name);
-            if (isTableUnique)
+            if (!isTableUnique)
             {
                 result.Errors.Add("Name", "Sto sa ovim nazivom već postoji");
             }

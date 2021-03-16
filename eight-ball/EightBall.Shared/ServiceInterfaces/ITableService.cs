@@ -9,5 +9,6 @@ namespace EightBall.Shared.ServiceInterfaces
 {
     public interface ITableService : IBaseService<TableDto>
     {
+        public Task<Result> AddTableAppointmentAsync(Guid id, Guid appointmentId);
     }
 }

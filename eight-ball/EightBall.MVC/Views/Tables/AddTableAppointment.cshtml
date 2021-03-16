@@ -1,0 +1,12 @@
+﻿@model EightBall.MVC.Models.TableAppointmentViewModel
+@{
+}
+
+<form asp-controller="Tables" asp-action="AddTableAppointment">
+    <select asp-for="AppointmentId" asp-items="Model.Appointments">
+        <option>Odaberite termin</option>
+    </select>
+
+    <input type="hidden" asp-for="TableId" />
+    <input type="submit" value="Potvrdi" />
+</form>
