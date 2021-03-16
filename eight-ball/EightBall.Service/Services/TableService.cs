@@ -23,10 +23,10 @@ namespace EightBall.Service.Services
         public async Task<Result> AddTableAppointmentAsync(Guid id, Guid appointmentId)
         {
             Result result = new Result();
-            bool entityExists = await EntityExists(id);
-            if (!entityExists)
+            var tableResult = await GetByIdAsync(id);
+            if (!tableResult.Succeeded)
             {
-                result.Errors.Add(Errors.NotFound, "Table not found");
+                result.Errors = tableResult.Errors;
                 return result;
             }
 
@@ -34,6 +34,18 @@ namespace EightBall.Service.Services
             if (!appointmentResult.Succeeded)
             {
                 result.Errors = appointmentResult.Errors;
+                return result;
+            }
+
+            if (tableResult.Value.Appointments.Any(a => a.Id == appointmentId))
+            {
+                result.Errors.Add("AppointmentId", "Ovaj termin već postoji");
+                return result;
+            }
+
+            if (tableResult.Value.Appointments.Any(a => a.Start <= appointmentResult.Value.End && appointmentResult.Value.Start <= a.End))
+            {
+                result.Errors.Add("AppointmentId", "Termin se preklapa sa već postojećim");
                 return result;
             }
 

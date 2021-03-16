@@ -185,7 +185,23 @@ namespace EightBall.MVC.Controllers
             {
                 return RedirectToAction(nameof(Details), new { id = viewModel.TableId });
             }
-            return BadRequest();
+            else
+            {
+                var appointmentResult = await _appointmentService.GetEntitiesAsync();
+                if (appointmentResult.Succeeded)
+                {
+                    List<SelectListItem> selectList = appointmentResult.Value.Select(a => new SelectListItem
+                    {
+                        Value = a.Id.ToString(),
+                        Text = string.Join(" - ", a.Start, a.End)
+                    }).ToList();
+
+                    viewModel.Appointments.AddRange(selectList);
+                }
+
+                ModelState.AddModelStateErrors(tableAppointmentResult.Errors);
+                return View(viewModel);
+            }
         }
     }
 }
