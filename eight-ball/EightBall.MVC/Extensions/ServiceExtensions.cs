@@ -14,6 +14,7 @@ namespace EightBall.MVC.Extensions
         {
             services.AddScoped<ITableService, TableService>();
             services.AddScoped<IAppointmentService, AppointmentService>();
+            services.AddScoped<IReservationService, ReservationService>();
 
             return services;
         }
