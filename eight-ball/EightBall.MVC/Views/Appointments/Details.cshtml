@@ -24,6 +24,25 @@
             @Html.DisplayFor(model => model.End)
         </dd>
     </dl>
+    <h6>Slobodni stolovi</h6>
+    <table>
+        <tr>
+            <td>Naziv</td>
+            <td></td>
+        </tr>
+        @if (Model.Tables.Any())
+        {
+            foreach (var table in Model.Tables)
+            {
+                <tr>
+                    <td>
+                        @table.Name
+                    </td>
+                    <td>Rezervisi</td>
+                </tr>
+            }
+        }
+    </table>
 </div>
 <div>
     @if (User.IsInRole(EightBall.Shared.Strings.RoleNames.Employee))

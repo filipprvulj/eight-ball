@@ -17,6 +17,16 @@ namespace EightBall.Data.Repositories
         {
         }
 
+        public override async Task<AppointmentDto> GetByIdAsync(Guid id)
+        {
+            Appointment appointment = await Entities
+                .Include(a => a.Tables
+                .Where(t => !_context.Reservations.Any(r => r.AppointmentId == id && r.TableId == t.Id)))
+                .AsNoTracking()
+                .FirstOrDefaultAsync(a => a.Id == id);
+            return _mapper.Map<AppointmentDto>(appointment);
+        }
+
         public async Task<bool> IsAppointmentUnique(AppointmentDto appointmentDto)
         {
             bool entityExists = await Entities.AnyAsync(a => a.Start == appointmentDto.Start && a.End == appointmentDto.End && a.Id != appointmentDto.Id);
