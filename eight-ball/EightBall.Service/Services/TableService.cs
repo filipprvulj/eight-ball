@@ -74,6 +74,34 @@ namespace EightBall.Service.Services
             return result;
         }
 
+        public async Task<Result> RemoveTableAppointmentAsync(Guid id, Guid appointmentId)
+        {
+            Result result = new Result();
+            bool tableExists = await _repository.EntityExists(id);
+            if (!tableExists)
+            {
+                result.Errors.Add(Errors.NotFound, "Table not found");
+                return result;
+            }
+
+            var appointmentExists = await _appointmentService.EntityExists(appointmentId);
+            if (!appointmentExists)
+            {
+                result.Errors.Add(Errors.NotFound, "Appointment not found");
+                return result;
+            }
+
+            int rowsDeleted = await _repository.RemoveTableAppointmentAsync(id, appointmentId);
+            if (rowsDeleted == default)
+            {
+                result.Errors.Add("TableAppointment", "Remove failed");
+                return result;
+            }
+
+            result.Succeeded = true;
+            return result;
+        }
+
         public override async Task<Result> UpdateAsync(TableDto dto)
         {
             Result result = new Result();

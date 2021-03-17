@@ -14,5 +14,7 @@ namespace EightBall.Shared.RepositoryInterfaces
         public Task<bool> IsTableUniqueAsync(string name, Guid id);
 
         public Task<int> AddTableAppointmentAsync(Guid id, AppointmentDto appointmentDto);
+
+        public Task<int> RemoveTableAppointmentAsync(Guid id, Guid appointmentId);
     }
 }

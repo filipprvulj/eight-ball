@@ -34,6 +34,16 @@ namespace EightBall.Data.Repositories
             return await _context.SaveChangesAsync();
         }
 
+        public async Task<int> RemoveTableAppointmentAsync(Guid id, Guid appointmentId)
+        {
+            Table table = _mapper.Map<Table>(await GetByIdAsync(id));
+            Entities.Attach(table);
+            Appointment appointment = table.Appointments.FirstOrDefault(a => a.Id == appointmentId);
+            table.Appointments.Remove(appointment);
+
+            return await _context.SaveChangesAsync();
+        }
+
         public async Task<bool> IsTableUniqueAsync(string name)
         {
             bool tableExists = await Entities.AnyAsync(t => t.Name == name);

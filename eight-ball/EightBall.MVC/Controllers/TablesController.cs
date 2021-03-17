@@ -203,5 +203,59 @@ namespace EightBall.MVC.Controllers
                 return View(viewModel);
             }
         }
+
+        [Authorize(Roles = RoleNames.Employee)]
+        public async Task<IActionResult> RemoveTableAppointment(Guid id, Guid appointmentId)
+        {
+            var tableResutlt = await _tableService.GetByIdAsync(id);
+            if (!tableResutlt.Succeeded)
+            {
+                if (tableResutlt.Errors.ContainsKey(Errors.NotFound))
+                {
+                    return NotFound();
+                }
+
+                return BadRequest(tableResutlt.Errors);
+            }
+
+            var appointmentResult = await _appointmentService.GetByIdAsync(appointmentId);
+            if (!appointmentResult.Succeeded)
+            {
+                if (appointmentResult.Errors.ContainsKey(Errors.NotFound))
+                {
+                    return NotFound();
+                }
+
+                return BadRequest(appointmentResult.Errors);
+            }
+
+            RemoveTableAppointmentViewModel viewModel = new RemoveTableAppointmentViewModel
+            {
+                Table = tableResutlt.Value,
+                Appointment = appointmentResult.Value
+            };
+
+            return View(viewModel);
+        }
+
+        [HttpPost]
+        [Authorize(Roles = RoleNames.Employee)]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> RemoveTableAppointment(RemoveTableAppointmentViewModel viewModel)
+        {
+            var tableAppointmentResult = await _tableService.RemoveTableAppointmentAsync(viewModel.Table.Id, viewModel.Appointment.Id);
+            if (tableAppointmentResult.Succeeded)
+            {
+                return RedirectToAction(nameof(Details), new { id = viewModel.Table.Id });
+            }
+            else
+            {
+                if (tableAppointmentResult.Errors.ContainsKey(Errors.NotFound))
+                {
+                    return NotFound(tableAppointmentResult.Errors);
+                }
+                return BadRequest(tableAppointmentResult.Errors);
+            }
+        }
     }
 }
