@@ -20,6 +20,8 @@ namespace EightBall.Data
 
         public DbSet<Appointment> Appointments { get; set; }
 
+        public DbSet<Reservation> Reservations { get; set; }
+
         protected override void OnModelCreating(ModelBuilder builder)
         {
             base.OnModelCreating(builder);
