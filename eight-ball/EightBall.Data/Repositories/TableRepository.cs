@@ -26,10 +26,9 @@ namespace EightBall.Data.Repositories
         public async Task<int> AddTableAppointmentAsync(Guid id, AppointmentDto appointmentDto)
         {
             Table table = _mapper.Map<Table>(await GetByIdAsync(id));
-            Appointment appointment = _mapper.Map<Appointment>(appointmentDto);
-
-            table.Appointments = new List<Appointment>() { appointment };
-            Entities.Update(table);
+            Appointment appointment = _context.Appointments.FirstOrDefault(a => a.Id == appointmentDto.Id);
+            Entities.Attach(table);
+            table.Appointments.Add(appointment);
 
             return await _context.SaveChangesAsync();
         }
