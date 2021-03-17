@@ -40,9 +40,9 @@ namespace EightBall.Data.Repositories
             return _mapper.ProjectTo<TDto>(Entities).ToListAsync();
         }
 
-        public async Task<TDto> GetByIdAsync(Guid id)
+        public virtual async Task<TDto> GetByIdAsync(Guid id)
         {
-            Task<TEntity> entity = Entities.FirstOrDefaultAsync(e => e.Id == id);
+            Task<TEntity> entity = Entities.AsNoTracking().FirstOrDefaultAsync(e => e.Id == id);
 
             return _mapper.Map<TDto>(await entity);
         }

@@ -9,5 +9,6 @@ namespace EightBall.Shared.Dtos
     public class TableDto : BaseDto
     {
         public string Name { get; set; }
+        public List<AppointmentDto> Appointments { get; set; }
     }
 }

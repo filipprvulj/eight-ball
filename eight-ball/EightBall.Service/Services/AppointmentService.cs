@@ -21,6 +21,12 @@ namespace EightBall.Service.Services
         public override async Task<Result<Guid>> InsertAsync(AppointmentDto dto)
         {
             Result<Guid> result = new Result<Guid>();
+            if (!IsDateValid(dto))
+            {
+                result.Errors.Add("Termin", "Uneto vreme nije validno");
+                return result;
+            }
+
             bool isAppointmentUnique = await _repository.IsAppointmentUnique(dto);
             if (!isAppointmentUnique)
             {
@@ -36,6 +42,12 @@ namespace EightBall.Service.Services
         public override async Task<Result> UpdateAsync(AppointmentDto dto)
         {
             Result result = new Result();
+            if (!IsDateValid(dto))
+            {
+                result.Errors.Add("Termin", "Uneto vreme nije validno");
+                return result;
+            }
+
             bool entityExists = await _repository.EntityExists(dto.Id);
             if (!entityExists)
             {
@@ -53,6 +65,21 @@ namespace EightBall.Service.Services
             }
 
             return result;
+        }
+
+        private bool IsDateValid(AppointmentDto dto)
+        {
+            dto.Start.AddSeconds(-1 * dto.Start.Second);
+            dto.End.AddSeconds(-1 * dto.End.Second);
+            var currentTime = new DateTime(DateTime.Now.Year, DateTime.Now.Month, DateTime.Now.Day, DateTime.Now.Hour, DateTime.Now.Minute, 0);
+
+            bool isDateValid = dto.Start < dto.End;
+            if (dto.Id == default)
+            {
+                isDateValid = isDateValid && dto.Start >= currentTime;
+            }
+
+            return isDateValid;
         }
     }
 }

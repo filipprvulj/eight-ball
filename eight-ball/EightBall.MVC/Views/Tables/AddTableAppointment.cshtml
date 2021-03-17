@@ -1,0 +1,17 @@
+﻿@model EightBall.MVC.Models.TableAppointmentViewModel
+@{
+}
+
+<form asp-controller="Tables" asp-action="AddTableAppointment">
+    <div asp-validation-summary="All" class="text-danger"></div>
+    <div class="form-group">
+        <select asp-for="AppointmentId" asp-items="Model.Appointments" class="form-control">
+            <option>Odaberite termin</option>
+        </select>
+        <input type="hidden" asp-for="TableId" />
+        <span asp-validation-for="AppointmentId" class="text-danger"></span>
+    </div>
+    <div class="form-group">
+        <input type="submit" value="Potvrdi" class="btn btn-primary float-right" />
+    </div>
+</form>

@@ -9,5 +9,6 @@ namespace EightBall.Data.Entities
     public class Table : BaseEntity
     {
         public string Name { get; set; }
+        public ICollection<Appointment> Appointments { get; set; } = new List<Appointment>();
     }
 }
