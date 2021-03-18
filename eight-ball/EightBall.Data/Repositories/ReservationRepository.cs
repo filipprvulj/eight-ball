@@ -17,6 +17,17 @@ namespace EightBall.Data.Repositories
         {
         }
 
+        public override async Task<ReservationDto> GetByIdAsync(Guid id)
+        {
+            Task<Reservation> reservation = Entities
+                .Include(r => r.Appointment)
+                .Include(r => r.Table)
+                .AsNoTracking()
+                .FirstOrDefaultAsync(r => r.Id == id);
+
+            return _mapper.Map<ReservationDto>(await reservation);
+        }
+
         public Task<List<ReservationDto>> GetReservationsByUserIdAsync(Guid id)
         {
             var reservations = Entities.Where(r => r.UserId == id.ToString());

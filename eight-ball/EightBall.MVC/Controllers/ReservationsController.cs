@@ -94,6 +94,40 @@ namespace EightBall.MVC.Controllers
             return RedirectToAction(nameof(Index));
         }
 
+        public async Task<IActionResult> Delete(Guid id)
+        {
+            var reservationResult = await _reservationService.GetByIdAsync(id);
+            if (!reservationResult.Succeeded)
+            {
+                if (reservationResult.Errors.ContainsKey(Errors.NotFound))
+                {
+                    return NotFound();
+                }
+
+                return BadRequest(reservationResult.Errors);
+            }
+
+            return View(reservationResult.Value);
+        }
+
+        [HttpPost, ActionName("Delete")]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> DeleteConfirmed(Guid id)
+        {
+            var result = await _reservationService.RemoveAsync(id);
+            if (!result.Succeeded)
+            {
+                if (result.Errors.ContainsKey(Errors.NotFound))
+                {
+                    return NotFound();
+                }
+
+                return BadRequest(result.Errors);
+            }
+
+            return RedirectToAction(nameof(Index));
+        }
+
         private Guid GetCurrentUserId()
         {
             return Guid.Parse(User.FindFirstValue(ClaimTypes.NameIdentifier));
