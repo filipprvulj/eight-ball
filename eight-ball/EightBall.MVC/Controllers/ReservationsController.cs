@@ -14,10 +14,12 @@ namespace EightBall.MVC.Controllers
     public class ReservationsController : Controller
     {
         private readonly IReservationService _reservationService;
+        private readonly IAppointmentService _appointmentService;
 
-        public ReservationsController(IReservationService reservationService)
+        public ReservationsController(IReservationService reservationService, IAppointmentService appointmentService)
         {
             _reservationService = reservationService;
+            _appointmentService = appointmentService;
         }
 
         public async Task<IActionResult> Index()
@@ -38,7 +40,7 @@ namespace EightBall.MVC.Controllers
             }
             else
             {
-                Guid userId = Guid.Parse(User.FindFirstValue(ClaimTypes.NameIdentifier));
+                Guid userId = GetCurrentUserId();
                 reservationResult = await _reservationService.GetReservationsByUserIdAsync(userId);
                 if (reservationResult.Succeeded)
                 {
@@ -51,6 +53,50 @@ namespace EightBall.MVC.Controllers
             }
 
             return View(reservations);
+        }
+
+        public async Task<IActionResult> Create(Guid id, Guid tableId)
+        {
+            var appointmentResult = await _appointmentService.GetByIdAsync(id);
+            if (!appointmentResult.Succeeded)
+            {
+                if (appointmentResult.Errors.ContainsKey(Errors.NotFound))
+                {
+                    return NotFound();
+                }
+
+                return BadRequest(appointmentResult.Errors);
+            }
+
+            Guid userId = GetCurrentUserId();
+            ReservationDto reservationDto = new ReservationDto()
+            {
+                AppointmentId = id,
+                Appointment = appointmentResult.Value,
+                TableId = tableId,
+                Table = appointmentResult.Value.Tables.FirstOrDefault(t => t.Id == tableId),
+                UserId = userId
+            };
+
+            return View(reservationDto);
+        }
+
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> Create([Bind("AppointmentId, TableId, UserId")] ReservationDto reservation)
+        {
+            var reservationResult = await _reservationService.InsertAsync(reservation);
+            if (!reservationResult.Succeeded)
+            {
+                return BadRequest(reservationResult.Errors);
+            }
+
+            return RedirectToAction(nameof(Index));
+        }
+
+        private Guid GetCurrentUserId()
+        {
+            return Guid.Parse(User.FindFirstValue(ClaimTypes.NameIdentifier));
         }
     }
 }
