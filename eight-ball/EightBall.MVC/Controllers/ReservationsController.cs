@@ -68,14 +68,12 @@ namespace EightBall.MVC.Controllers
                 return BadRequest(appointmentResult.Errors);
             }
 
-            Guid userId = GetCurrentUserId();
             ReservationDto reservationDto = new ReservationDto()
             {
                 AppointmentId = id,
                 Appointment = appointmentResult.Value,
                 TableId = tableId,
-                Table = appointmentResult.Value.Tables.FirstOrDefault(t => t.Id == tableId),
-                UserId = userId
+                Table = appointmentResult.Value.Tables.FirstOrDefault(t => t.Id == tableId)
             };
 
             return View(reservationDto);
@@ -83,8 +81,9 @@ namespace EightBall.MVC.Controllers
 
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create([Bind("AppointmentId, TableId, UserId")] ReservationDto reservation)
+        public async Task<IActionResult> Create([Bind("AppointmentId, TableId")] ReservationDto reservation)
         {
+            reservation.UserId = GetCurrentUserId();
             var reservationResult = await _reservationService.InsertAsync(reservation);
             if (!reservationResult.Succeeded)
             {
