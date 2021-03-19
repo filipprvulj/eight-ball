@@ -25,25 +25,29 @@
         </dd>
     </dl>
     <h6>Slobodni stolovi</h6>
-    <table style="width: 50%">
-        <tr>
-            <td style="width: 50%">Naziv</td>
-            <td></td>
-        </tr>
-        @if (Model.Tables.Any())
-        {
-            foreach (var table in Model.Tables)
+    <table class="table">
+        <thead>
+            <tr>
+                <th>Naziv</th>
+                <th></th>
+            </tr>
+        </thead>
+        <tbody>
+            @if (Model.Tables.Any())
             {
-                <tr>
-                    <td style="width: 50%">
-                        @table.Name
-                    </td>
-                    <td>
-                        <a asp-action="Create" asp-controller="Reservations" asp-route-id="@Model.Id" asp-route-tableId="@table.Id">Rezervisi</a>
-                    </td>
-                </tr>
+                foreach (var table in Model.Tables)
+                {
+                    <tr>
+                        <td>
+                            @table.Name
+                        </td>
+                        <td>
+                            <a asp-action="Create" asp-controller="Reservations" asp-route-id="@Model.Id" asp-route-tableId="@table.Id">Rezervisi</a>
+                        </td>
+                    </tr>
+                }
             }
-        }
+        </tbody>
     </table>
 </div>
 <div>

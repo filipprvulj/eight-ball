@@ -18,11 +18,15 @@
                 </button>
                 <div class="navbar-collapse collapse d-sm-inline-flex justify-content-between">
                     <ul class="navbar-nav flex-grow-1">
-                        @if (User.Identity.IsAuthenticated)
+                        @if (User.IsInRole(EightBall.Shared.Strings.RoleNames.Employee))
                         {
                         <li class="nav-item">
                             <a class="nav-link text-dark" asp-area="" asp-controller="Tables" asp-action="Index">Stolovi</a>
                         </li>
+
+                        }
+                        @if (User.Identity.IsAuthenticated)
+                        {
                         <li class="nav-item">
                             <a class="nav-link text-dark" asp-area="" asp-controller="Appointments" asp-action="Index">Termini</a>
                         </li>

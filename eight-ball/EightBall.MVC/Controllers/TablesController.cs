@@ -15,7 +15,7 @@ using System.Threading.Tasks;
 
 namespace EightBall.MVC.Controllers
 {
-    [Authorize(Roles = RoleNames.EmployeeOrVisitor)]
+    [Authorize(Roles = RoleNames.Employee)]
     public class TablesController : Controller
     {
         private readonly ITableService _tableService;
@@ -53,7 +53,6 @@ namespace EightBall.MVC.Controllers
         }
 
         // GET: TablesController/Create
-        [Authorize(Roles = RoleNames.Employee)]
         public IActionResult Create()
         {
             return View();
@@ -61,7 +60,6 @@ namespace EightBall.MVC.Controllers
 
         // POST: TablesController/Create
         [HttpPost]
-        [Authorize(Roles = RoleNames.Employee)]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Create([Bind("Name,Id")] TableModel tableModel)
         {
@@ -78,7 +76,6 @@ namespace EightBall.MVC.Controllers
         }
 
         // GET: TablesController/Edit/5
-        [Authorize(Roles = RoleNames.Employee)]
         public async Task<IActionResult> Edit(Guid id)
         {
             var result = await _tableService.GetByIdAsync(id);
@@ -95,7 +92,6 @@ namespace EightBall.MVC.Controllers
 
         // POST: TablesController/Edit/5
         [HttpPost]
-        [Authorize(Roles = RoleNames.Employee)]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Edit(Guid id, [Bind("Name,Id")] TableModel model)
         {
@@ -118,7 +114,6 @@ namespace EightBall.MVC.Controllers
         }
 
         // GET: TablesController/Delete/5
-        [Authorize(Roles = RoleNames.Employee)]
         public async Task<IActionResult> Delete(Guid id)
         {
             var result = await _tableService.GetByIdAsync(id);
@@ -133,7 +128,6 @@ namespace EightBall.MVC.Controllers
 
         // POST: TablesController/Delete/5
         [HttpPost, ActionName("Delete")]
-        [Authorize(Roles = RoleNames.Employee)]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> DeleteConfirmed(Guid id)
         {
@@ -146,7 +140,6 @@ namespace EightBall.MVC.Controllers
             return RedirectToAction(nameof(Index));
         }
 
-        [Authorize(Roles = RoleNames.Employee)]
         public async Task<IActionResult> AddTableAppointment(Guid id)
         {
             bool tableExists = await _tableService.EntityExists(id);
@@ -176,7 +169,6 @@ namespace EightBall.MVC.Controllers
         }
 
         [HttpPost]
-        [Authorize(Roles = RoleNames.Employee)]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> AddTableAppointment([Bind("TableId, AppointmentId")] TableAppointmentViewModel viewModel)
         {
@@ -204,7 +196,6 @@ namespace EightBall.MVC.Controllers
             }
         }
 
-        [Authorize(Roles = RoleNames.Employee)]
         public async Task<IActionResult> RemoveTableAppointment(Guid id, Guid appointmentId)
         {
             var tableResutlt = await _tableService.GetByIdAsync(id);
@@ -239,7 +230,6 @@ namespace EightBall.MVC.Controllers
         }
 
         [HttpPost]
-        [Authorize(Roles = RoleNames.Employee)]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> RemoveTableAppointment(RemoveTableAppointmentViewModel viewModel)
         {

@@ -44,9 +44,17 @@
                 <td>
                     @Html.DisplayFor(modelItem => item.Appointment.End)
                 </td>
-                <td>
-                    <a asp-action="Delete" asp-route-id="@item.Id">Otkazi</a>
-                </td>
+                @if (item.UserId == Guid.Parse(User.Claims.FirstOrDefault(c => c.Type == System.Security.Claims.ClaimTypes.NameIdentifier).Value))
+                {
+                    <td>
+                        <a asp-action="Delete" asp-route-id="@item.Id">Otkazi</a>
+                    </td>
+
+                }
+                else
+                {
+                    <td></td>
+                }
             </tr>
         }
     </tbody>

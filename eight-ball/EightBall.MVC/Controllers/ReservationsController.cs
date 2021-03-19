@@ -2,6 +2,7 @@
 using EightBall.Shared.Dtos;
 using EightBall.Shared.ServiceInterfaces;
 using EightBall.Shared.Strings;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using System;
 using System.Collections.Generic;
@@ -11,6 +12,7 @@ using System.Threading.Tasks;
 
 namespace EightBall.MVC.Controllers
 {
+    [Authorize]
     public class ReservationsController : Controller
     {
         private readonly IReservationService _reservationService;
