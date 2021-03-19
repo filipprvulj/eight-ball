@@ -1,0 +1,66 @@
+﻿@model IEnumerable<EightBall.Shared.Dtos.ReservationDto>
+
+@{
+    ViewData["Title"] = "Index";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<h1>Index</h1>
+
+<p>
+    <a asp-action="Index" asp-controller="Appointments">Napravi novu rezervaciju</a>
+</p>
+<table id="table" class="table">
+    <thead>
+        <tr>
+            <th>
+                @Html.DisplayNameFor(model => model.User.Email)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.Table.Name)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.Appointment.Start)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.Appointment.End)
+            </th>
+            <th></th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var item in Model)
+        {
+            <tr>
+                <td>
+                    @Html.DisplayFor(modelItem => item.User.Email)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.Table.Name)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.Appointment.Start)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.Appointment.End)
+                </td>
+                @if (item.UserId == Guid.Parse(User.Claims.FirstOrDefault(c => c.Type == System.Security.Claims.ClaimTypes.NameIdentifier).Value))
+                {
+                    <td>
+                        <a asp-action="Delete" asp-route-id="@item.Id">Otkazi</a>
+                    </td>
+
+                }
+                else
+                {
+                    <td></td>
+                }
+            </tr>
+        }
+    </tbody>
+</table>
+
+@section Scripts{
+    <script src="~/js/signalr/dist/browser/signalr.js"></script>
+    <script src="~/js/reservations.js"></script>
+}

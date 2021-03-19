@@ -10,5 +10,6 @@ namespace EightBall.Shared.Dtos
     {
         public DateTime Start { get; set; }
         public DateTime End { get; set; }
+        public List<TableDto> Tables { get; set; }
     }
 }
