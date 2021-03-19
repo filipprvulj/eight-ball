@@ -113,7 +113,8 @@ namespace EightBall.MVC.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> DeleteConfirmed(Guid id)
         {
-            var result = await _reservationService.RemoveAsync(id);
+            Guid userId = GetCurrentUserId();
+            var result = await _reservationService.RemoveAsync(id, userId);
             if (!result.Succeeded)
             {
                 if (result.Errors.ContainsKey(Errors.NotFound))

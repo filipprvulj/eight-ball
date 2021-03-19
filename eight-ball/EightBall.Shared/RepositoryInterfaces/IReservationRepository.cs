@@ -9,6 +9,8 @@ namespace EightBall.Shared.RepositoryInterfaces
 {
     public interface IReservationRepository : IBaseRepository<ReservationDto>
     {
+        public Task<bool> EntityExists(Guid appointmentId, Guid tableId);
+
         public Task<List<ReservationDto>> GetReservationsByUserIdAsync(Guid id);
     }
 }

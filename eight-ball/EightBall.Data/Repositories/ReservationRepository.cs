@@ -17,6 +17,11 @@ namespace EightBall.Data.Repositories
         {
         }
 
+        public Task<bool> EntityExists(Guid appointmentId, Guid tableId)
+        {
+            return Entities.AnyAsync(r => r.AppointmentId == appointmentId && r.TableId == tableId);
+        }
+
         public override async Task<ReservationDto> GetByIdAsync(Guid id)
         {
             Task<Reservation> reservation = Entities

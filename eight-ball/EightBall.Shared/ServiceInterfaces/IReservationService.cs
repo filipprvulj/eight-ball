@@ -9,6 +9,8 @@ namespace EightBall.Shared.ServiceInterfaces
 {
     public interface IReservationService : IBaseService<ReservationDto>
     {
+        public Task<Result> RemoveAsync(Guid id, Guid currentUserId);
+
         public Task<Result<List<ReservationDto>>> GetReservationsByUserIdAsync(Guid id);
     }
 }
