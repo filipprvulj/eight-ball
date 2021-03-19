@@ -10,7 +10,7 @@
 <p>
     <a asp-action="Index" asp-controller="Appointments">Napravi novu rezervaciju</a>
 </p>
-<table class="table">
+<table id="table" class="table">
     <thead>
         <tr>
             <th>
@@ -59,3 +59,8 @@
         }
     </tbody>
 </table>
+
+@section Scripts{
+    <script src="~/js/signalr/dist/browser/signalr.js"></script>
+    <script src="~/js/reservations.js"></script>
+}

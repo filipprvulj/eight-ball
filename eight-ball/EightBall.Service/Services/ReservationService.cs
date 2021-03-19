@@ -1,8 +1,10 @@
-﻿using EightBall.Shared;
+﻿using EightBall.Service.Hubs;
+using EightBall.Shared;
 using EightBall.Shared.Dtos;
 using EightBall.Shared.RepositoryInterfaces;
 using EightBall.Shared.ServiceInterfaces;
 using EightBall.Shared.Strings;
+using Microsoft.AspNetCore.SignalR;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -13,8 +15,13 @@ namespace EightBall.Service.Services
 {
     public class ReservationService : BaseService<ReservationDto, IReservationRepository>, IReservationService
     {
-        public ReservationService(IReservationRepository repository) : base(repository)
+        private readonly IHubContext<ReservationHub> _hub;
+        private readonly IUserRepository _userRepository;
+
+        public ReservationService(IReservationRepository repository, IHubContext<ReservationHub> hub, IUserRepository userRepository) : base(repository)
         {
+            _hub = hub;
+            _userRepository = userRepository;
         }
 
         public override async Task<Result<Guid>> InsertAsync(ReservationDto dto)
@@ -34,6 +41,10 @@ namespace EightBall.Service.Services
                 result.Errors.Add("Insert", "Greska prilikom kreiranja rezervacije");
                 return result;
             }
+
+            var insertedReservation = await _repository.GetByIdAsync(insertedRow);
+            var employees = await _userRepository.GetEmployeeIdsAsync();
+            await _hub.Clients.Users(employees).SendAsync("InsertedReservation", insertedReservation);
 
             result.Succeeded = true;
             result.Value = insertedRow;

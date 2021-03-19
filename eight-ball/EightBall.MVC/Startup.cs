@@ -1,5 +1,6 @@
 using EightBall.Data;
 using EightBall.MVC.Extensions;
+using EightBall.Service.Hubs;
 using EightBall.Shared.Options;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
@@ -38,6 +39,7 @@ namespace EightBall.MVC
             services.AddRepositories();
             services.AddServices();
 
+            services.AddSignalR();
             services.AddRazorPages();
             services.AddControllersWithViews();
         }
@@ -72,6 +74,7 @@ namespace EightBall.MVC
                 endpoints.MapControllerRoute(
                     name: "default",
                     pattern: "{controller=Home}/{action=Index}/{id?}");
+                endpoints.MapHub<ReservationHub>("/reservationHub");
             });
         }
     }

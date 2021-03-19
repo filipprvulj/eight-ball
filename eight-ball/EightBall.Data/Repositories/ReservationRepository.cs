@@ -27,6 +27,7 @@ namespace EightBall.Data.Repositories
             Task<Reservation> reservation = Entities
                 .Include(r => r.Appointment)
                 .Include(r => r.Table)
+                .Include(r => r.User)
                 .AsNoTracking()
                 .FirstOrDefaultAsync(r => r.Id == id);
 
