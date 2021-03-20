@@ -4,6 +4,7 @@ var connection = new signalR.HubConnectionBuilder().withUrl("/reservationHub").b
 
 connection.on("InsertedReservation", function (reservation) {
     console.log(reservation);
+    formatDate(reservation.appointment.start)
 
     var htmlTable = document.getElementById('table').getElementsByTagName('tbody')[0];
     var row = htmlTable.insertRow();
@@ -16,8 +17,8 @@ connection.on("InsertedReservation", function (reservation) {
 
     var emailText = document.createTextNode(reservation.user.email);
     var tableText = document.createTextNode(reservation.table.name);
-    var startText = document.createTextNode(reservation.appointment.start);
-    var endText = document.createTextNode(reservation.appointment.end);
+    var startText = document.createTextNode(formatDate(reservation.appointment.start));
+    var endText = document.createTextNode(formatDate(reservation.appointment.end));
     var actionsText = document.createTextNode("");
 
     email.appendChild(emailText);
@@ -32,3 +33,23 @@ connection.start().then(function () {
 }).catch(function (err) {
     return console.log(err.toString());
 })
+
+function formatDate(date) {
+    const months = ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"];
+    let current_datetime = new Date(date)
+    let formatted_date = appendLeadingZeroes(current_datetime.getDate()) + "-"
+        + months[current_datetime.getMonth()] + "-"
+        + current_datetime.getFullYear().toString().substr(2) + " "
+        + appendLeadingZeroes(current_datetime.getHours()) + ":"
+        + appendLeadingZeroes(current_datetime.getMinutes()) + ":"
+        + appendLeadingZeroes(current_datetime.getSeconds())
+
+    return formatted_date;
+}
+
+function appendLeadingZeroes(n) {
+    if (n <= 9) {
+        return "0" + n;
+    }
+    return n
+}
