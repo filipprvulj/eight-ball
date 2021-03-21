@@ -43,7 +43,7 @@ namespace EightBall.Service.Decorators
             return _reservationService.InsertAsync(dto);
         }
 
-        public Task<Result> RemoveAsync(Guid id, Guid currentUserId)
+        public virtual Task<Result> RemoveAsync(Guid id, Guid currentUserId)
         {
             return _reservationService.RemoveAsync(id, currentUserId);
         }

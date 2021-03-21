@@ -43,5 +43,17 @@ namespace EightBall.Service.Decorators
 
             return result;
         }
+
+        public override async Task<Result> RemoveAsync(Guid id, Guid currentUserId)
+        {
+            Result result = await base.RemoveAsync(id, currentUserId);
+            if (result.Succeeded)
+            {
+                var emloyees = await _userRepository.GetEmployeeIdsAsync();
+                await _hub.Clients.Users(emloyees).SendAsync("RemoveReservation", id);
+            }
+
+            return result;
+        }
     }
 }

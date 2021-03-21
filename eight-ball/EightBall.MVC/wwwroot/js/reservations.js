@@ -8,6 +8,7 @@ connection.on("InsertedReservation", function (reservation) {
 
     var htmlTable = document.getElementById('table').getElementsByTagName('tbody')[0];
     var row = htmlTable.insertRow();
+    row.id = reservation.id.toString()
 
     var email = row.insertCell(0);
     var table = row.insertCell(1);
@@ -27,6 +28,11 @@ connection.on("InsertedReservation", function (reservation) {
     end.appendChild(endText);
     actions.appendChild(actionsText);
 })
+
+connection.on("RemoveReservation", function (reservationId) {
+    var reservationRow = document.getElementById(reservationId.toString());
+    reservationRow.parentNode.removeChild(reservationRow);
+});
 
 connection.start().then(function () {
     return console.log("Connection successful");
