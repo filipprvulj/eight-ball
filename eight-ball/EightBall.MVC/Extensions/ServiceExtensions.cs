@@ -1,4 +1,5 @@
-﻿using EightBall.Service.Services;
+﻿using EightBall.Service.Decorators;
+using EightBall.Service.Services;
 using EightBall.Shared.ServiceInterfaces;
 using Microsoft.Extensions.DependencyInjection;
 using System;
@@ -15,6 +16,7 @@ namespace EightBall.MVC.Extensions
             services.AddScoped<ITableService, TableService>();
             services.AddScoped<IAppointmentService, AppointmentService>();
             services.AddScoped<IReservationService, ReservationService>();
+            services.Decorate<IReservationService, ReservationServiceDecorator>();
 
             return services;
         }
