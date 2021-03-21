@@ -31,31 +31,31 @@
     <tbody>
         @foreach (var item in Model)
         {
-            <tr>
-                <td>
-                    @Html.DisplayFor(modelItem => item.User.Email)
-                </td>
-                <td>
-                    @Html.DisplayFor(modelItem => item.Table.Name)
-                </td>
-                <td>
-                    @Html.DisplayFor(modelItem => item.Appointment.Start)
-                </td>
-                <td>
-                    @Html.DisplayFor(modelItem => item.Appointment.End)
-                </td>
-                @if (item.UserId == Guid.Parse(User.Claims.FirstOrDefault(c => c.Type == System.Security.Claims.ClaimTypes.NameIdentifier).Value))
+        <tr id="@item.Id">
+            <td>
+                @Html.DisplayFor(modelItem => item.User.Email)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.Table.Name)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.Appointment.Start)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.Appointment.End)
+            </td>
+            @if (item.UserId == Guid.Parse(User.Claims.FirstOrDefault(c => c.Type == System.Security.Claims.ClaimTypes.NameIdentifier).Value))
                 {
-                    <td>
-                        <a asp-action="Delete" asp-route-id="@item.Id">Otkazi</a>
-                    </td>
+            <td>
+                <a asp-action="Delete" asp-route-id="@item.Id">Otkazi</a>
+            </td>
 
                 }
                 else
                 {
-                    <td></td>
+            <td></td>
                 }
-            </tr>
+        </tr>
         }
     </tbody>
 </table>
